@@ -59,7 +59,7 @@ const CreateStreamComponent = ({ onCreateStream, response, wallet }: Props) => {
     if (!wallet) return;
 
     const depositedAmount = typeof values.depositedAmount === 'string' ? parseInt(values.depositedAmount) : values.depositedAmount;
-    
+
     const createStreamParams: CreateParams = {
       sender:  wallet, // 
       mint: "HaWnUM4z1Y3HMZ7BbQhnY3DGMLE8dZeBnLJUCKxf1fcT", // SPL Token mint.
@@ -109,9 +109,8 @@ const CreateStreamComponent = ({ onCreateStream, response, wallet }: Props) => {
               label="Token"
               onChange={handleSelectToken}
             >
-              <MenuItem value={10}>SOL</MenuItem>
-              <MenuItem value={20}>SRMT</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={'sol'}>SOL</MenuItem>
+              <MenuItem value={'strm'}>STRM</MenuItem>
             </Select>
           </FormControl>
         </div>
