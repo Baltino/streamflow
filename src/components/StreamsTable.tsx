@@ -48,7 +48,7 @@ const StreamsTable = ({ streams }: Props) => {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row[0]}
+                  {row[1].name.replace(/\0/g, '')}
                 </TableCell>
                 <TableCell align="right">{getStreamStatus(row[1].canceledAt, row[1].createdAt, row[1].end)}</TableCell>
                 <TableCell align="right">{row[1].depositedAmount.toString()}</TableCell>

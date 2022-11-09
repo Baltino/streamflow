@@ -57,11 +57,14 @@ const CreateStreamComponent = ({ onCreateStream, response, wallet }: Props) => {
 
   const handleOnCreateStream = () => {
     if (!wallet) return;
+
+    const depositedAmount = typeof values.depositedAmount === 'string' ? parseInt(values.depositedAmount) : values.depositedAmount;
+    
     const createStreamParams: CreateParams = {
       sender:  wallet, // 
       mint: "HaWnUM4z1Y3HMZ7BbQhnY3DGMLE8dZeBnLJUCKxf1fcT", // SPL Token mint.
       start: new Date().getTime()/100 + 60, // next minute.
-      depositedAmount: getBN(parseInt(values.depositedAmount || 0), 9), // depositing 100 tokens with 9 decimals mint.
+      depositedAmount: getBN(depositedAmount, 9), // depositing 100 tokens with 9 decimals mint.
       period: 1, // Time step (period) in seconds per which the unlocking occurs.
       cliff: new Date().getTime()/100 + 90, // Vesting contract "cliff" timestamp in seconds.
       cliffAmount: new BN(10), // Amount unlocked at the "cliff" timestamp.
