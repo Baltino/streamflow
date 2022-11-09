@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
@@ -21,7 +22,7 @@ import { PhantomWallet } from '../wallets/phantom';
 type Props = {
   onCreateStream: (c: CreateParams) => void,
   response: { status: StatusRequest, error: string },
-  wallet: PhantomWallet
+  wallet: PhantomWallet | null
 }
 type BasicCreateStreamAttributes = {
   recipient: string,
@@ -55,11 +56,12 @@ const CreateStreamComponent = ({ onCreateStream, response, wallet }: Props) => {
   }
 
   const handleOnCreateStream = () => {
+    if (!wallet) return;
     const createStreamParams: CreateParams = {
       sender:  wallet, // 
       mint: "HaWnUM4z1Y3HMZ7BbQhnY3DGMLE8dZeBnLJUCKxf1fcT", // SPL Token mint.
       start: new Date().getTime()/100 + 60, // next minute.
-      depositedAmount: getBN(values.depositedAmount || 0, 9), // depositing 100 tokens with 9 decimals mint.
+      depositedAmount: getBN(parseInt(values.depositedAmount || 0), 9), // depositing 100 tokens with 9 decimals mint.
       period: 1, // Time step (period) in seconds per which the unlocking occurs.
       cliff: new Date().getTime()/100 + 90, // Vesting contract "cliff" timestamp in seconds.
       cliffAmount: new BN(10), // Amount unlocked at the "cliff" timestamp.
@@ -130,26 +132,39 @@ const CreateStreamComponent = ({ onCreateStream, response, wallet }: Props) => {
           />
         </div>
         <div>
-          <TextField
-            required
-            value={values.depositedAmount}
-            id="outlined-required"
-            label="Amount"
-            type="number"
-            onChange={handleChangeValue('depositedAmount')}
-          />
-          <FormControlLabel
-            control={
-              <Switch value={values.cancelableBySender} onChange={handleToggleValue('cancelableBySender')}/>
-            }
-            label="Cancelable by sender"
-          />
+          <FormGroup row>
+            <TextField
+              required
+              value={values.depositedAmount}
+              id="outlined-required"
+              label="Amount"
+              type="number"
+              onChange={handleChangeValue('depositedAmount')}
+            />
+            <FormControlLabel
+              control={
+                <Switch value={values.cancelableBySender} onChange={handleToggleValue('cancelableBySender')}/>
+              }
+              label="Cancelable by sender"
+              style={{ display: 'flex', alignItems: 'center' }}
+            />
+          </FormGroup>
         </div>
         <div>
-          <Button onClick={handleOnCreateStream}>
-            Create
-          </Button>
+          <FormControl>
+            <Button onClick={handleOnCreateStream} variant="contained" disabled={response.status === StatusRequest.in_progress}>
+              Create
+            </Button>
+          </FormControl>
         </div>
+      </Box>
+      <Box>
+        {response.status === StatusRequest.error && (
+          <Typography variant="body1" color="error">Somthing bad has happened! {response.error}</Typography>
+        )}
+        {response.status === StatusRequest.success && (
+          <Typography variant="body1" color="success">Created successfully!</Typography>
+        )}
       </Box>
     </Container>
   );
