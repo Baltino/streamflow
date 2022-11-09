@@ -8,7 +8,7 @@ interface Props {
   wallet: PhantomWallet;
 }
 
-type State = {
+export type StreamflowPropsHOC = {
   streamClient: StreamClient | null,
   wallet: PhantomWallet | null
 }
@@ -16,7 +16,7 @@ type State = {
 const withStreamflow = (WrappedComponent: React.FunctionComponent<Props>) => {
   return class StreamFlowHOC extends React.Component {
 
-    state: State;
+    state: StreamflowPropsHOC;
 
     constructor(props: any) {
       super(props);
